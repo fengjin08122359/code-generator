@@ -1,0 +1,3 @@
+html.droppable, html.droppable * {
+  cursor: copy !important;
+}
