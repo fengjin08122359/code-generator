@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var projectRouter = require('./routes/project');
 var componentsRouter = require('./routes/components');
 var exportZipRouter = require('./routes/exportZip');
+var uploadRouter = require('./routes/upload');
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use('/', indexRouter);
 app.use('/project', projectRouter);
 app.use('/components', componentsRouter);
 app.use('/exportZip', exportZipRouter);
+app.use('/uploadFile', uploadRouter);
 
 
 // catch 404 and forward to error handler

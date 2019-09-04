@@ -1,30 +1,38 @@
 <template>
   <div id="Main">
-    <img alt="Vue logo" src="../assets/img/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <el-button @click="jumpProject()">项目详情</el-button> 
+    <el-button @click="jumpComps()">子组件详情</el-button> 
+    <el-button @click="jumpImage()">图片管理</el-button> 
+    
   </div>
 </template>
 
 <script>
-
-import HelloWorld from '../components/HelloWorld.vue'
-import {mapActions} from 'vuex'
 export default {
   name: 'Main',
-  data () {
+  data() {
     return {}
   },
   mounted() {
     this.init()
   },
   methods: {
-    ...mapActions({
-      init: 'main/init'
-    })
+    jumpProject() {
+      this.$router.push({
+        name: 'Project',
+      })
+    },
+    jumpComps() {
+      this.$router.push({
+        name: 'CompsList',
+      })
+    },
+    jumpImage() {
+      this.$router.push({
+        name: 'ImgManage',
+      })
+    }
   },
-  components: {
-    HelloWorld
-  }
 }
 </script>
 

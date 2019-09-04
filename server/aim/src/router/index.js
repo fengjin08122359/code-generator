@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-const Router1567150993378 = () => import('../pages/router1567150993378/Router1567150993378.vue');
-var routes = [{path: '/',name: 'home',component: Router1567150993378},];
+const Router1567158287622 = () => import('../pages/router1567158287622/Router1567158287622.vue');
+const Ppap = () => import('../pages/ppap/Ppap.vue');
+var routes = [{path: '/',name: 'home',component: Router1567158287622},{path: '/page',name: 'page',component: Ppap},];
 
 
 

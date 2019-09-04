@@ -115,6 +115,13 @@ let handle = new Handle({
             type: 'object',
             valueType: 'color'
           })
+        } else if (value.type == 'image') {
+          result.push({
+            name: key,
+            value: JSON.parse(JSON.stringify(value)),
+            type: 'object',
+            valueType: 'image'
+          })
         }
       }
     }

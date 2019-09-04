@@ -9,17 +9,21 @@ class ArrangeList extends DataHandle{
   }
   init () {
     console.log('ArrangeList init')
+    this.get();
+  }
+  get () {
     httplink('getArrangeList', `/components/getArrangeList`, {}, 'post')
     .then(result => {
       this.list = []
-      for(let [key, value] of entries(result.res) ){
-        var items = JSON.parse(value);
+      result.res.forEach(item => {
+        var items = JSON.parse(item.list)
         var citems = rgData.componentsClass.resetToComponents(items)
         this.list.push({
-          name: key,
+          alias: item.alias,
+          name: item.id,
           value: citems
         })
-      }
+      })
     })
   }
 }

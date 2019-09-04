@@ -1,5 +1,5 @@
 <template>
-  <el-button class="elbutton" :type="rawData.type.val"  :plain="rawData.plain">{{rawData.text}}</el-button>
+  <el-button class="elbutton" :type="rawData.type.value"  :plain="rawData.plain">{{rawData.text}}</el-button>
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default {
       raw: {
         text: 'button',
         type: {
-          val: '',
+          value: '',
           options: ['', 'primary', 'success', 'info', 'warning', 'danger'],
           type: "array"
         },

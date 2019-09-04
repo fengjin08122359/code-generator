@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import {rgData} from 'nclient-microfront';
+import {rgData,rgHandle} from 'nclient-microfront';
 import { components } from "@/sdk/components";
 import elementsFromPoint from "@/sdk/util/elementsFromPoint";
 import Screen from "./screen/Screen";
@@ -44,6 +44,7 @@ export default {
       initialRelPos: {x: 0, y: 0},
       currentAbsPos: {x: 0, y: 0},
       currentRelPos: {x: 0, y: 0},
+      activeMove: null
     }
   },
   props: ['target'],
@@ -89,7 +90,6 @@ export default {
 
       // const fixedElement = fixElementToParentBounds({top, left, height, width}, this.page)
       // element = {...element, ...fixedElement}
-      
       comp.saveStyle({position: 'absolute', top, left, height, width})
 
       e.preventDefault();
@@ -115,14 +115,25 @@ export default {
         this.components.active = []
         return
       } 
+      this.activeMove = this.active
       if (this.active) {
         isMrs = true
         // this.$emit('movestart')
+        if (e.ctrlKey) {
+          var comp = components.register({
+            style: this.active.style,
+            raw: this.active.raw,
+          })
+          comp.saveStyle({top: this.active.stylePure.top + 20, left: this.active.stylePure.left + 20})
+          rgHandle.componentsClass.setActive(comp);
+          this.activeMove = comp
+        }
       }
-
       if (isMrs) {
-        document.documentElement.addEventListener('mousemove', this.mouseMoveHandler, true)
-        document.documentElement.addEventListener('mouseup', this.mouseUpHandler, true)
+        this.$nextTick(() => {
+          document.documentElement.addEventListener('mousemove', this.mouseMoveHandler, true)
+          document.documentElement.addEventListener('mouseup', this.mouseUpHandler, true)
+        })
       }
     },
     mouseMoveHandler (e) {
@@ -136,7 +147,9 @@ export default {
       let offX = this.currentAbsPos.x - lastAbsX
       let offY = this.currentAbsPos.y - lastAbsY
       if (this.active) {
-        this.active.move(offX/zoom, offY/zoom)
+        if (!e.ctrlKey) {
+          this.active.move(offX/zoom, offY/zoom)
+        }
       }
     },
     mouseUpHandler (e) {
@@ -157,5 +170,6 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  z-index: -99999999;
 }
 </style>

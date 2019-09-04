@@ -1,33 +1,35 @@
 var express = require('express');
 var router = express.Router();
-var {db} = require('../db/index')
+var {db} = require('../redis/index')
 /* GET users listing. */
-router.post('/getBasic',  function(req, res, next) {
+router.post('/getBasic',async function(req, res, next) {
   var id = req.body.id
-  var result = db.getBasic({id});
+  var result = await db.getBasic({id});
   res.send(result);
 });
 router.post('/saveBasic', function(req, res, next) {
   var id = req.body.id
   var list = req.body.list
-  db.saveBasic({id, list})
+  var alias = req.body.alias
+  db.saveBasic({id, list, alias})
   res.send({});
 });
 
 
-router.post('/getArrangeList', function(req, res, next) {
-  var result = db.getArrangeList();
+router.post('/getArrangeList',async function(req, res, next) {
+  var result = await db.getArrangeList();
   res.send(result);
 });
-router.post('/getArrange', function(req, res, next) {
+router.post('/getArrange',async function(req, res, next) {
   var id = req.body.id
-  var result = db.getArrange({id});
+  var result = await db.getArrange({id});
   res.send(result);
 });
 router.post('/saveArrange', function(req, res, next) {
   var id = req.body.id
   var list = req.body.list
-  db.saveArrange({id, list})
+  var alias = req.body.alias
+  db.saveArrange({id, list, alias})
   res.send({});
 });
 

@@ -6,6 +6,7 @@ class Basic extends DataHandle{
   constructor() {
     super('basicComp')
     this.id = ''
+    this.alias = ''
   }
   init () {
     console.log('Basic init')
@@ -13,6 +14,7 @@ class Basic extends DataHandle{
   save () {
     httplink('saveBasic', `/components/saveBasic`, {
       id: this.id,
+      alias: this.alias,
       list: JSON.stringify(rgData.componentsClass.getSaveableList())
     }, 'post')
     .then(result => {
@@ -50,7 +52,8 @@ let handle = new Handle({
     httplink('getBasic', `/components/getBasic`, {id}, 'post')
     .then(result => {
       console.log(result)
-      rgData.componentsClass.setList(result.res)
+      basic.alias = result.res.alias;
+      rgData.componentsClass.setList(JSON.parse(result.res.list))
     })
   },
 })

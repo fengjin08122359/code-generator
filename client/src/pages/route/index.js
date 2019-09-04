@@ -32,14 +32,14 @@ let handle = new Handle({
   switchRoute (pk) {
     route.getRouter(pk)
   },
-  addRouter (name, path) {
-    httplink('addRouter', `/project/addRouter`, {name, path,id: route.id}, 'post')
+  addRouter (name, path, alias) {
+    httplink('addRouter', `/project/addRouter`, {name, path,id: route.id, alias}, 'post')
     .then(result => {
       route.getRouter()
     })
   },
   edit (item) {
-    httplink('editRouter', `/project/modifyRouter`, {name:item.name, path:item.path,id: route.id,routerId: item.id}, 'post')
+    httplink('editRouter', `/project/modifyRouter`, {name:item.name, path:item.path,id: route.id,routerId: item.id, alias:item.alias}, 'post')
     .then(result => {
       route.getRouter()
     })

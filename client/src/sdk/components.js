@@ -1,9 +1,14 @@
-import {Handle, DataHandle, rgHandle} from 'nclient-microfront';
+import {
+  Handle,
+  DataHandle,
+  rgHandle,
+  httplink
+} from 'nclient-microfront';
 import uuidv1 from 'uuid/v1';
 
 new Handle({
   name: 'compList',
-  add (name, raw, style = {}) {
+  add(name, raw, style = {}) {
     this[name] = {
       raw,
       style
@@ -12,7 +17,7 @@ new Handle({
 })
 
 
-class Component extends DataHandle{
+class Component extends DataHandle {
   constructor(props) {
     var id = props.id || ("comp" + uuidv1())
     super('componentClass', id)
@@ -21,7 +26,16 @@ class Component extends DataHandle{
     this.props = null
     // this.children = []
     this.style = {
-      wordBreak: 'break-all'
+      wordBreak: 'break-all',
+      "box-sizing": "border-box",
+      "border-left": "1px #000 solid",
+      "border-right": "1px #000 solid",
+      "border-top": "1px #000 solid",
+      "border-bottom": "1px #000 solid",
+      "border-top-left-radius": "0px",
+      "border-top-right-radius": "0px",
+      "border-bottom-left-radius": "0px",
+      "border-bottom-right-radius": "0px"
     }
     this.target = null
     this.raw = {}
@@ -29,12 +43,13 @@ class Component extends DataHandle{
     this.children = []
     this.childrenName = ''
     this.merge(props)
+    // this.getChildFromServer()
     // el.target.appendChild(this.target.$el);
   }
-  init () {
+  init() {
     console.log('Component init')
   }
-  merge (props) {
+  merge(props) {
     this.props = {
       ...this.props,
       ...props.props
@@ -44,16 +59,23 @@ class Component extends DataHandle{
       ...props.style
     }
     this.children = props.children || [];
-    this.childrenName =  props.childrenName || '';
+    this.childrenName = props.childrenName || '';
     this.type = props.type
     this.target = null
     if (this.type) {
-      this.style = {...rgHandle.compList[this.type].style, ...this.style}
-      this.raw = {...rgHandle.compList[this.type].raw, ...this.raw,...props.raw}
+      this.style = {
+        ...rgHandle.compList[this.type].style,
+        ...this.style
+      }
+      this.raw = {
+        ...rgHandle.compList[this.type].raw,
+        ...this.raw,
+        ...props.raw
+      }
     }
     this.genStyle();
   }
-  genStyle () {
+  genStyle() {
     this.style = {
       ...this.style,
       zIndex: this.style.zIndex,
@@ -66,10 +88,10 @@ class Component extends DataHandle{
       width: (typeof this.style.width === 'number') ? (this.style.width + 'px') : this.style.width,
       height: (typeof this.style.height === 'number') ? (this.style.height + 'px') : this.style.height
     }
-    
+
     this.stylePure.top = this.useParseInt(this.style.top)
     this.stylePure.left = this.useParseInt(this.style.left)
-    this.stylePure.bottom =  this.useParseInt(this.style.bottom)
+    this.stylePure.bottom = this.useParseInt(this.style.bottom)
     this.stylePure.right = this.useParseInt(this.style.right)
     this.stylePure.bottom = this.useParseInt(this.style.bottom)
     this.stylePure.width = this.useParseInt(this.style.width)
@@ -78,52 +100,63 @@ class Component extends DataHandle{
   useParseInt(val) {
     return (val && (val.indexOf('px') > -1 || val.indexOf('rem') > -1)) ? parseInt(val) : null
   }
-  saveChildren (val, name) {
-    this.children = val || [];
-    this.childrenName =  name || '';
+  saveChildren(name) {
+    this.childrenName = name || '';
+    this.getChildFromServer()
   }
-  saveStyle (val) {
+  getChildFromServer() {
+    if (this.childrenName) {
+      this.children = [];
+      httplink('getArrange', `/components/getArrange`, {
+          id: this.childrenName
+        }, 'post')
+        .then(result => {
+          this.children = components.resetToComponents(JSON.parse(result.res.list))
+        })
+    }
+  }
+  saveStyle(val) {
     this.style = {
       ...this.style,
       ...val
     }
     this.genStyle();
   }
-  saveRaw (raw) {
-    this.raw  = {
+  saveRaw(raw) {
+    this.raw = {
       ...this.raw,
       ...raw
     }
   }
-  move (x,y) {
+  move(x, y) {
     var left = this.stylePure.left + x
     var top = this.stylePure.top + y
     this.style = {
       ...this.style,
       left: left,
       top: top,
-      position: 'absolute' 
+      position: 'absolute'
     }
     this.genStyle();
   }
 }
 
-class Components extends DataHandle{
+class Components extends DataHandle {
   constructor() {
     super('componentsClass')
     this.list = []
     this.active = []
-    document.addEventListener("keydown", (event) => { 
+    document.addEventListener("keydown", (event) => {
       if (event.keyCode == 46 && this.active.length > 0) {
         this.deleteActive()
       }
-    }, false); 
+    }, false);
 
   }
-  init () {
+  init() {
     console.log('Components init')
   }
-  register (props) {
+  register(props) {
     var comp = null
     if (this.list.filter(item => item.id == props.id).length == 0) {
       comp = new Component(props);
@@ -135,26 +168,26 @@ class Components extends DataHandle{
     console.log(comp);
     return comp
   }
-  deleteActive () {
+  deleteActive() {
     var lastActive = this.active[0]
     this.active = []
     if (lastActive) {
       this.list = this.list.filter(item => item.id != lastActive.id)
     }
   }
-  setList (data) {
+  setList(data) {
     this.list = [];
     data.forEach(item => {
       this.list.push(new Component(item))
-    }) 
+    })
   }
-  getSaveableList () {
+  getSaveableList() {
     return this.getSaveable(this.list)
   }
-  getSaveable (data) {
+  getSaveable(data) {
     return data.map(item => {
       var target = {}
-      target.id =  item.id || ("comp" + uuidv1())
+      target.id = item.id || ("comp" + uuidv1())
       target.props = item.props
       target.style = item.style
       target.type = item.type
@@ -164,7 +197,7 @@ class Components extends DataHandle{
       return target
     })
   }
-  resetToComponents (data) {
+  resetToComponents(data) {
     return data.map(item => {
       return new Component(item)
     })
@@ -175,14 +208,14 @@ let components = new Components()
 
 let handle = new Handle({
   name: 'componentsClass',
-  created () {
+  created() {
     components.init()
     console.log('components created')
   },
-  mounted () {
+  mounted() {
     console.log('components mounted')
   },
-  setActive (item) {
+  setActive(item) {
     components.active = [item]
   }
 })

@@ -8,8 +8,17 @@
         <el-button @click="addArrange">修改组件</el-button>
       </template>
     </el-input>
-    <el-col>currentChildren: {{childrenName}}</el-col>
-    <div v-for="(item, index) in arrangeList.list" :key="index">
+    <el-col>当前子组件: {{childrenName}} <el-button @click="refreshChild">刷新子组件</el-button><el-button @click="clearChild">清理</el-button></el-col>
+    <el-col><el-input v-model='filterName'>
+      <template slot='prepend'>
+        筛选
+      </template>
+      <template slot='append'>
+        <span @click="refresh">刷新组件</span>
+      </template>
+    </el-input></el-col>
+    
+    <div v-for="(item, index) in filterList" :key="index">
       <el-button-group>
         <el-button @click="saveChildren(item)">{{item.name}}</el-button>
         <el-button @click="editorArrange(item)">修改</el-button>
@@ -31,7 +40,8 @@
       return {
         components: components,
         arrangeList: arrangeList,
-        name: ''
+        name: '',
+        filterName: ''
       }
     },
     computed: {
@@ -40,6 +50,9 @@
       },
       childrenName () {
         return this.active ? this.active.childrenName : ''
+      },
+      filterList () {
+        return this.arrangeList.list.filter(item => item.name.indexOf(this.filterName) > -1)
       }
     },
     created() {
@@ -51,7 +64,21 @@
     methods: {
       saveChildren(item) {
         if (this.active) {
-          this.active.saveChildren(item.value, item.name)
+          this.active.saveChildren(item.name)
+        }
+      },
+      refreshChild () {
+        if (this.active) {
+          this.active.getChildFromServer()
+        }
+      },
+      refresh () {
+        arrangeList.get()
+      },
+      clearChild () {
+        if (this.active) {
+          this.active.childrenName = ''
+          this.active.children = [];
         }
       },
       addArrange() {

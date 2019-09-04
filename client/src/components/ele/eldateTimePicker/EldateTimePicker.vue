@@ -17,7 +17,7 @@ export default {
       raw: {
         text: '',
         type: {
-          val: 'date',
+          value: 'date',
           options: ['year', 'month', 'date', 'week', 'datetime', 'datetimerange', 'daterange'],
           type: "array"
         },

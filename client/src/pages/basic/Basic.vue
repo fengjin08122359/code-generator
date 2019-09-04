@@ -53,6 +53,8 @@ export default {
   },
   mounted() {
     handle.mounted()
+  },
+  activated() {
     handle.switchRoute(this.$route.params.id)
   },
   watch: {

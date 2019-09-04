@@ -1,5 +1,5 @@
 <template>
-  <el-image :src="rawData.url"  :fit="rawData.fit.value" :lazy="rawData.lazy"></el-image>
+  <el-image :src="rawData.url.value"  :fit="rawData.fit.value" :lazy="rawData.lazy"></el-image>
 </template>
 
 <script>
@@ -10,7 +10,10 @@ export default {
     return {
       elimage: elimage,
       raw: {
-        url: '',
+        url: {
+          value: '',
+          type: 'image'
+        },
         fit: {
           value: '',
           options:['', 'fill', 'contain', 'cover', 'none', 'scale-down'],

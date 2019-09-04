@@ -6,6 +6,11 @@
         路由名称
       </template>
     </el-input>
+    <el-input v-model='alias'>
+      <template slot='prepend'>
+        路由简称
+      </template>
+    </el-input>
     <el-input v-model='path'>
       <template slot='prepend'>
         路由地址
@@ -38,6 +43,11 @@
             路由名称
           </template>
         </el-input>
+        <el-input v-model='item.alias'>
+          <template slot='prepend'>
+            路由简称
+          </template>
+        </el-input>
         <el-input v-model='item.path'>
           <template slot='prepend'>
             路由地址
@@ -62,6 +72,7 @@
         route: route,
         name: '',
         path: '',
+        alias: '',
         needPage: false
       }
     },
@@ -70,6 +81,8 @@
     },
     mounted() {
       handle.mounted()
+    },
+    activated() {
       handle.switchRoute(this.$route.params.pk)
     },
     methods: {
@@ -80,7 +93,7 @@
       },
       add() {
         if (this.name && this.path && this.path.startsWith('/')) {
-          handle.addRouter(this.name, this.path)
+          handle.addRouter(this.name, this.path, this.alias)
         } else {
           alert('路由信息填写错误,路由需要/开头')
         }

@@ -16,6 +16,27 @@
           <el-button @click="exportZip">exportZip</el-button>
         </el-button-group>
       </el-col>
+      <el-col :span="6">
+        <el-input v-model='width'>
+          <template slot='prepend'>
+            宽度
+          </template>
+        </el-input>
+      </el-col>
+      <el-col :span="6">
+        <el-input v-model='height'>
+          <template slot='prepend'>
+            长度
+          </template>
+        </el-input>
+      </el-col>
+      <el-col :span="12" v-if='target.show'>
+        <el-input v-model='target.alias'>
+          <template slot='prepend'>
+            组件名称
+          </template>
+        </el-input>
+      </el-col>
     </el-row>
     <div class='screenBack'>
       <div :style='screenStyle' class='screenStyle'>
@@ -37,7 +58,9 @@
         screenTo: true,
         zoom: 1,
         fileList: [],
-        url: ''
+        url: '',
+        width: 900, 
+        height: 600
       }
     },
     props: ['target'],
@@ -45,11 +68,11 @@
       screenStyle() {
         return {
           ...this.screenTo ? {
-            width: "600px",
-            height: "900px"
+            width: this.height+ 'px',
+            height: this.width + 'px'
           } : {
-            width: "900px",
-            height: "600px"
+            width: this.width+ 'px',
+            height: this.height + 'px'
           },
           transform: `scale(${this.zoom})`
         }
@@ -113,7 +136,7 @@
 
   .screenBack {
     position: absolute;
-    top: 45px;
+    top: 90px;
     left: 0;
     right: 0;
     bottom: 0;

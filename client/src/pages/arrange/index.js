@@ -4,6 +4,8 @@ class Arrange extends DataHandle{
   constructor() {
     super('arrangeComp')
     this.id = ''
+    this.alias = ''
+    this.show = true
   }
   init () {
     console.log('Arrange init')
@@ -11,6 +13,7 @@ class Arrange extends DataHandle{
   save () {
     httplink('saveArrange', `/components/saveArrange`, {
       id: this.id,
+      alias: this.alias,
       list: JSON.stringify(rgData.componentsClass.getSaveableList())
     }, 'post')
     .then(result => {
@@ -49,7 +52,8 @@ let handle = new Handle({
     httplink('getArrange', `/components/getArrange`, {id}, 'post')
     .then(result => {
       console.log(result)
-      rgData.componentsClass.setList(result.res)
+      arrange.alias = result.res.alias
+      rgData.componentsClass.setList(JSON.parse(result.res.list))
     })
   },
 })

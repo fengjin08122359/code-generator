@@ -1,6 +1,7 @@
 <template>
   <div class="coverEl"
     @mousedown.prevent="e => $emit('activated', e)">
+    <div class='coverEl-bg'></div>
     <slot></slot>
   </div>
 </template>
@@ -32,6 +33,7 @@ export default {
 .coverEl:hover {
   cursor: move;
 }
+
 .coverEl > * {
   margin: 0;
   width: 100%;
@@ -39,7 +41,11 @@ export default {
   /* position: absolute; */
   box-sizing: border-box;
 }
-
+.coverEl-bg {
+  position: absolute;
+  z-index: 99999999;
+  background: transparent;
+}
 .selection-box {
   border: 2px solid #03a9f4;
 }

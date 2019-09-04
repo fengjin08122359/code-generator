@@ -24,6 +24,14 @@
         <template v-if='item.valueType=="color"'>
           <el-col>{{item.name}}: <el-color-picker v-model="item.value.value" @change="save"></el-color-picker></el-col>
         </template>
+         <template v-if='item.valueType=="image"'>
+          <el-col>
+            <el-input disabled v-model="item.value.value" @input="save">
+              <template slot='prepend' >{{item.name}}</template>
+              <template slot='append' ><Upload v-model="item.value.value" v-on:uploadChange='(val) => {item.value.value = val;save()}'></Upload></template>
+            </el-input>
+          </el-col>
+        </template>
       </template>
       <template v-else-if='item.type=="array"'>
         {{item.name}}:
@@ -44,6 +52,7 @@
 
 <script>
 import handle, { rawControl } from "./index";
+import Upload from '@/components/upload/Upload'
 export default {
   name: 'RawControl',
   data() {
@@ -88,6 +97,7 @@ export default {
       this.raw = handle.getData(val);
     }
   },
+  components: {Upload}
 }
 </script>
 

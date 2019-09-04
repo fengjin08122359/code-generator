@@ -74,19 +74,37 @@ npm start
 
 ###代码生成器
 #####1.路由生成规则
-( ) 根据路由name在pages中生成vue
+(x) 根据路由name在pages中生成vue
 cd \src\pages
 nclient-build component name
-( ) 根据路由信息生成router.js
+(x) 根据路由信息生成router.js
 替换文本
 /* router config start */
 const Home12 = () => import('../pages/home12/Home12.vue');
 var routes = [{path: '/',name: 'Home12',component: Home12}];
 /* router config end */
 #####2.页面生成规则
-( ) 根据规则循环遍历,判断children是否存在
-( ) 不存在的,在template中生成根据名称获取style和raw传递到对象中
-( ) 存在的,在components文件夹下新建组件,组件名是childrenName然后继续第一步,假如当前组件已存在则跳过
+(x) 根据规则循环遍历,判断children是否存在
+(x) 不存在的,在template中生成根据名称获取style和raw传递到对象npm中
+(x) 存在的,在components文件夹下新建组件,组件名是childrenName然后继续第一步,假如当前组件已存在则跳过
 cd \src\components
 nclient-build component name
-( ) 将raw和style信息保存在js文件中
+(x) 将raw和style信息保存在js文件中
+
+2019/09/02 开发工作
+(x) 子组件查询
+(x) 路由命名
+(x) 组件命名
+(x) 子组件嵌套修改方式
+(x) 复制功能
+(x) redis,数据库链接改造
+
+john的需求整理 
+( ) ajax请求,成功,失败返回结果
+( ) 某插件传入值,经过请求,返回值
+( ) 在非组件界面中使用?
+
+2019/09/03 开发工作
+(x) 图片上传
+( ) 开发思路整理
+(x) 清理组件

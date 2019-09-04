@@ -10,6 +10,7 @@ const {
   editorConfigInVue,
   editorConfigInRouter
 } = require('./editor')
+var {db} = require('../redis/index')
 const components_path = path.resolve(__dirname, '../template/components');
 const component_path = path.resolve(__dirname, '../template/component');
 const pages_path = path.resolve(__dirname, '../template/pages');
@@ -45,8 +46,9 @@ function modifyRouter (data) {
   let routerConfig = ''
   let routes = ''
   data.forEach(item => {
-    let lowerchild = lowerCamelCase(item.id)
-    let upperchild = upperCamelCase(item.id)
+    var name = item.alias || item.id
+    let lowerchild = lowerCamelCase(name)
+    let upperchild = upperCamelCase(name)
     routerConfig += `const ${upperchild} = () => import('../pages/${lowerchild}/${upperchild}.vue');\r\n`
     routes += `{path: '${item.path}',name: '${item.name}',component: ${upperchild}},`
   });
@@ -54,31 +56,34 @@ function modifyRouter (data) {
   editorConfigInRouter(router_path, routerConfig)
 }
 
-async function  generatePages (name, data) {
+async function  generatePages (id, data) {
   if (data && data != '[]') {
-    var json = JSON.parse(data);
+    // console.log(data);
+    // var json = JSON.parse(data);
+    var json = data;
     await copyByPath(pages_path, aim_dest_path)
-    await generateComponent(name, json, aim_dest_path, './pages/')
+    await generateComponent(id, json, aim_dest_path, './pages/')
   }
 }
 
-async function  generateComponents (name, data) {
+async function  generateComponents (id, data) {
   if (data && data != '[]') {
     var json = JSON.parse(data);
     //copy components from template
     await copyByPath(components_path, aim_dest_path)
-    await generateComponent(name, json, aim_dest_path, './components/')
+    await generateComponent(id, json, aim_dest_path, './components/')
   }
 }
-async function  generateComponent (name, data, dest_path, to_path) {
+async function  generateComponent (id, data, dest_path, to_path) {
   // console.log(name, data, dest_path)
+  var name = await db.getArrangeAlias(id);
   const lower = lowerCamelCase(name)
   const upper = upperCamelCase(name)
   const componentDest_path = path.resolve(dest_path, to_path+lower);
   //新建一个 component 
   await initComponent(lower, upper, component_path ,componentDest_path)
   //遍历data 修改js和vue
-  modifyComponent(lower, upper, data, componentDest_path)
+  await modifyComponent(lower, upper, data, componentDest_path)
 }
 function clearAim () {
   var aimpath = path.resolve(__dirname, '../aim/src');
@@ -131,31 +136,33 @@ function initComponent (lower, upper, src ,dest) {
   })
 }
 
-function modifyComponent (lower, upper, data, dest_path ) {
+async function modifyComponent (lower, upper, data, dest_path ) {
   // console.log(name, data, dest_path )
   var dataConfig = ''
   var templateConfig = ''
   var importConfig = ''
   var compConfig = ''
   let compList = []
-  data.forEach(item => {
+  for(let item of data){
     var target = {
       style: item.style,
       raw: item.raw,
       type: item.type
     }
     var childrenTemplate = ''
-    dataConfig += `this['${item.id}'] = ${JSON.stringify(target)};\r\n`
+    var alias = item.alias || item.id
+    dataConfig += `this["${alias}"] = ${JSON.stringify(target)};\r\n`
     if (item.children.length > 0 && item.childrenName) {
-      let lowerchild = lowerCamelCase(item.childrenName)
-      let upperchild = upperCamelCase(item.childrenName)
+      var childrenName = await db.getArrangeAlias(item.childrenName);
+      let lowerchild = lowerCamelCase(childrenName)
+      let upperchild = upperCamelCase(childrenName)
       childrenTemplate = `<${upperchild}></${upperchild}>`
       importConfig += `import ${upperchild} from '@/components/${lowerchild}/${upperchild}'\r\n`
       compList.push(upperchild)
-      generateComponent(lowerchild, item.children, aim_dest_path, './components/')
+      generateComponent(item.childrenName, item.children, aim_dest_path, './components/')
     }
-    templateConfig += `<${item.type} :rawData='${lower}["${item.id}"].raw' :style='${lower}["${item.id}"].style'>${childrenTemplate}</${item.type}>\r\n`
-  })
+    templateConfig += `<${item.type} :rawData='${lower}["${alias}"].raw' :style='${lower}["${alias}"].style'>${childrenTemplate}</${item.type}>\r\n`
+  }
   if (compList.length > 0) {
     compConfig = `components:{${compList.join(',')}}`
   }

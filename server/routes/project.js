@@ -1,57 +1,59 @@
 var express = require('express');
 var router = express.Router();
-var {db} = require('../db/index')
+var {db} = require('../redis/index')
 /* GET users listing. */
-router.post('/', function(req, res, next) {
-  res.send(db.getAllProject());
+router.post('/',async function(req, res, next) {
+  res.send(await db.getAllProject());
 });
 
-router.post('/add', function(req, res, next) {
+router.post('/add',async function(req, res, next) {
   var name = req.body.name
-  db.addProject(name)
+  await db.addProject(name)
   res.send({});
 });
 
-router.post('/del', function(req, res, next) {
+router.post('/del',async function(req, res, next) {
   var id = req.body.id
-  db.delProject(id)
+  await db.delProject(id)
   res.send({});
 });
 
-router.post('/modify', function(req, res, next) {
+router.post('/modify',async function(req, res, next) {
   var newName = req.body.newName
   var id = req.body.id
-  db.modifyProject(id, {newName})
+  await db.modifyProject(id, {newName})
   res.send({});
 });
 
 
-router.post('/getRouter', function(req, res, next) {
+router.post('/getRouter',async  function(req, res, next) {
   var id = req.body.id
-  res.send(db.getRouter(id));
+  res.send(await db.getRouter(id));
 });
 
-router.post('/addRouter', function(req, res, next) {
+router.post('/addRouter', async function(req, res, next) {
   var id = req.body.id
   var name = req.body.name
   var path = req.body.path
-  db.addRouter(id, {name, path})
+  var alias = req.body.alias
+  await db.addRouter(id, {name, path, alias})
   res.send({});
 });
 
-router.post('/delRouter', function(req, res, next) {
+router.post('/delRouter',async function(req, res, next) {
   var id = req.body.id
   var routerId = req.body.routerId
-  db.delRouter(id, routerId)
+  await db.delRouter(id, routerId)
   res.send({});
 });
 
-router.post('/modifyRouter', function(req, res, next) {
+router.post('/modifyRouter', async function(req, res, next) {
   var id = req.body.id
   var name = req.body.name
   var path = req.body.path
   var routerId = req.body.routerId
-  db.modifyRouter(id, {routerId,name,path})
+  var alias = req.body.alias
+  await db.modifyRouter(id, {routerId,name,path, alias})
   res.send({});
 });
 
