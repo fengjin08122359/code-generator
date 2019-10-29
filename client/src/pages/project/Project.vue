@@ -16,6 +16,7 @@
           <el-button-group style='margin-left: 20px;'>
            <el-button  @click="del(item)">删除项目</el-button>
            <el-button  @click="jump(item)">跳转路由</el-button>
+           <el-button  @click="postman(item)">postman</el-button>
            <el-button  @click="exportZip(item)">导出项目</el-button>
           </el-button-group>
         </template>
@@ -59,6 +60,9 @@ export default {
     },
     jump (item) {
       this.$router.push({name: 'Route',params: {pk: item.id}})
+    },
+    postman (item) {
+      this.$router.push({name: 'Postman',params: {id: item.id}})
     },
     exportZip (item) {
        handle.exportZip(item);

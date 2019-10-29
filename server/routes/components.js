@@ -32,6 +32,10 @@ router.post('/saveArrange', function(req, res, next) {
   db.saveArrange({id, list, alias})
   res.send({});
 });
-
+router.post('/delArrange',async function(req, res, next) {
+  var id = req.body.id
+  var result = await db.delArrange({id});
+  res.send(result);
+});
 
 module.exports = router;

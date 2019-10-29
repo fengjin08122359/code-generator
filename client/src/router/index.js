@@ -8,6 +8,7 @@ const Basic = () => import('../pages/basic/Basic.vue')
 const Arrange = () => import('../pages/arrange/Arrange.vue')
 const CompsList = () => import('../pages/compsList/CompsList.vue')
 const ImgManage = () => import('../pages/imgManage/ImgManage.vue')
+const Postman = () => import('../pages/postman/Postman.vue')
 
 Vue.use(Router);
 
@@ -47,6 +48,11 @@ var router =  new Router({
       path: '/ImgManage',
       name: 'ImgManage',
       component: ImgManage
+    },
+    {
+      path: '/Postman/:id',
+      name: 'Postman',
+      component: Postman
     }
   ],
 })

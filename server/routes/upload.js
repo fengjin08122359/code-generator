@@ -8,7 +8,6 @@ let multer = require('multer');
 router.post('/img', multer({
  dest: 'upload'  
 }).single('file'),(req,res)=>{
-  console.log(req)
   fs.readFile(req.file.path,(err,data)=>{
     if(err){return res.send('上传失败')}
     let time= uuidv1();

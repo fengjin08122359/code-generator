@@ -1,6 +1,7 @@
 import sdk from '../../sdk'
 
 const state = {
+  displayBorderColor: '#dbdbdb'
 }
 const getters = {
 }
@@ -11,6 +12,9 @@ const actions = {
   init () {
     sdk.init()
   },
+  setDisplayBorderColor ({state}, color) {
+    state.displayBorderColor = color
+  }
 }
 
 export default {

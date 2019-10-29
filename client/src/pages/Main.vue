@@ -2,8 +2,7 @@
   <div id="Main">
     <el-button @click="jumpProject()">项目详情</el-button> 
     <el-button @click="jumpComps()">子组件详情</el-button> 
-    <el-button @click="jumpImage()">图片管理</el-button> 
-    
+    <el-button @click="jumpImage()">图片管理</el-button>
   </div>
 </template>
 
@@ -14,7 +13,6 @@ export default {
     return {}
   },
   mounted() {
-    this.init()
   },
   methods: {
     jumpProject() {
@@ -31,7 +29,7 @@ export default {
       this.$router.push({
         name: 'ImgManage',
       })
-    }
+    },
   },
 }
 </script>

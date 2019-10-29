@@ -45,6 +45,52 @@ let control = {
   },
 }
 
+class PostMan {
+  constructor () {
+    
+  }
+  async read (routerId) {
+    const data = await control.get('code-generator/postman/' + routerId);
+    return data || []
+  }
+  async write (routerId, result) {
+    var db = result
+    try{
+      db = JSON.stringify(result)
+    }catch(error){}
+    await control.set('code-generator/postman/' + routerId, (db));
+  }
+  async getList (routerId) {
+    return await this.read(routerId) 
+  }
+  async getSingle (routerId, id) {
+    return (await this.read(routerId)).filter(item => item.id == id)[0]
+  }
+  async delSingle (routerId, id) {
+    if (!id) return
+    var list = (await this.read(routerId)).filter(item => {
+      return item.id != id
+    }) 
+    await this.write(routerId, list)
+  }
+  async saveSingle (routerId, id, target) {
+    target.id = id
+    var list = await  this.read(routerId) 
+    var hasList = false;
+    var result = list.reduce((total, item) => {
+      if (item.id == id) {
+        item = target
+        hasList = true
+      }
+      total.push(item)
+      return total
+    }, [])
+    if (!hasList) {
+      result.push(target)
+    }
+    await this.write(routerId, result)
+  }
+}
 
 class Arrange {
   constructor () {
@@ -69,6 +115,13 @@ class Arrange {
     var router = await this.readComps() 
     var comps = router.filter(item => item.id == id)[0]
     return comps
+  }
+  async delComponents (id) {
+    if (!id) return
+    var comps = (await this.readComps()).filter(item => {
+      return item.id != id
+    }) 
+    await this.writeComps(comps)
   }
   async saveComponents (id, list, alias) {
     var router = await  this.readComps() 
@@ -122,6 +175,13 @@ class Basic {
     var router = await  this.readRouter() 
     var comps = router.filter(item => item.id == id)[0]
     return comps 
+  }
+  async delComponents (id) {
+    if (!id) return
+    var comps = (await this.readRouter()).filter(item => {
+      return item.id != id
+    }) 
+    await this.writeRouter(comps)
   }
   async saveComponents (id, list, alias) {
     var router = await  this.readRouter() 
@@ -197,6 +257,7 @@ class Db{
   constructor() {
     this.basic = new Basic();
     this.arrange = new Arrange()
+    this.postman = new PostMan()
   }
   async readDb () {
     const data = await control.get('code-generator/db');
@@ -300,6 +361,9 @@ class Db{
   }
   async getArrange ({id}) {
     return await this.arrange.getComponents(id)
+  }
+  async delArrange ({id}) {
+    return await this.arrange.delComponents(id)
   }
   async saveArrange ({id, list, alias}) {
     if (!id.startsWith('arr')) {

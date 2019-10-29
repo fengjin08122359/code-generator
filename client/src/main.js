@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import ElementUI from 'element-ui'
+import BackCol from './components/backCol/BackCol'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'normalize.css';
 import 'font-awesome/css/font-awesome.min.css';
@@ -14,7 +15,7 @@ import { logger } from 'nclient-microfront';
 promise.polyfill()
 Vue.config.productionTip = false
 Vue.use(ElementUI);
-
+Vue.component('BackCol', BackCol)
 logger.setLevel(-1)
 
 new Vue({

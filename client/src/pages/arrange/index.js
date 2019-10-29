@@ -53,7 +53,11 @@ let handle = new Handle({
     .then(result => {
       console.log(result)
       arrange.alias = result.res.alias
-      rgData.componentsClass.setList(JSON.parse(result.res.list))
+      if (result.res.list) {
+        rgData.componentsClass.setList(JSON.parse(result.res.list))
+      } else {
+        rgData.componentsClass.setList([])
+      }
     })
   },
 })

@@ -1,6 +1,6 @@
 <template>
   <div class="route">
-    <el-button @click="back"><span class='el-icon-back'></span></el-button>
+    <BackCol/>
     <el-input v-model='name'>
       <template slot='prepend'>
         路由名称
@@ -86,11 +86,6 @@
       handle.switchRoute(this.$route.params.pk)
     },
     methods: {
-      back() {
-        this.$router.push({
-          name: 'Project'
-        })
-      },
       add() {
         if (this.name && this.path && this.path.startsWith('/')) {
           handle.addRouter(this.name, this.path, this.alias)

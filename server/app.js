@@ -9,6 +9,7 @@ var projectRouter = require('./routes/project');
 var componentsRouter = require('./routes/components');
 var exportZipRouter = require('./routes/exportZip');
 var uploadRouter = require('./routes/upload');
+var postmanRouter = require('./routes/postman');
 
 var app = express();
 
@@ -27,7 +28,14 @@ app.use('/project', projectRouter);
 app.use('/components', componentsRouter);
 app.use('/exportZip', exportZipRouter);
 app.use('/uploadFile', uploadRouter);
+app.use('/postman', postmanRouter);
 
+app.all('*', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header("Access-Control-Allow-Headers","content-type");
+  res.header('Access-Control-Allow-Methods', '*');
+  next();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

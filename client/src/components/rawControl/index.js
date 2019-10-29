@@ -122,6 +122,34 @@ let handle = new Handle({
             type: 'object',
             valueType: 'image'
           })
+        } else if (value.type == 'table') {
+          result.push({
+            name: key,
+            value: JSON.parse(JSON.stringify(value)),
+            type: 'object',
+            valueType: 'table',
+            addObj: {
+              prop: 'prop',
+              label: 'label',
+              width: '120',
+            },
+            addCol:function () {
+              this.value.col.push(this.addObj)
+            },
+            delCol:function (index) {
+              this.value.col.splice(index, 1)
+            },
+            addData:function () {
+              var addObj = {}
+              this.value.col.forEach((item) => {
+                addObj[item.prop] = item.label
+              })
+              this.value.data.push(addObj)
+            },
+            delData:function (index) {
+              this.value.data.splice(index, 1)
+            }
+          })
         }
       }
     }

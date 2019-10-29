@@ -110,7 +110,7 @@ export default {
       this.initialAbsPos = this.currentAbsPos = this.getMouseAbsPoint(e)
       this.initialRelPos = this.currentRelPos = this.getMouseRelPoint(e)
       var el = elementsFromPoint(e.clientX,e.clientY)
-      console.log(el);
+      
       if (el[0].id == 'main') {
         this.components.active = []
         return
@@ -123,6 +123,9 @@ export default {
           var comp = components.register({
             style: this.active.style,
             raw: this.active.raw,
+            type: this.active.type,
+            childrenName: this.active.childrenName,
+            children: this.active.children,
           })
           comp.saveStyle({top: this.active.stylePure.top + 20, left: this.active.stylePure.left + 20})
           rgHandle.componentsClass.setActive(comp);

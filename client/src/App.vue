@@ -14,4 +14,9 @@ export default {
 </script>
 
 <style>
+html,body,#app{
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+}
 </style>

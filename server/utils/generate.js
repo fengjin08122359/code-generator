@@ -8,7 +8,9 @@ const {
 const {
   editorConfigInJs,
   editorConfigInVue,
-  editorConfigInRouter
+  editorConfigInRouter,
+  editorConfigInHttp,
+  editorConfigInAxios
 } = require('./editor')
 var {db} = require('../redis/index')
 const components_path = path.resolve(__dirname, '../template/components');
@@ -16,6 +18,7 @@ const component_path = path.resolve(__dirname, '../template/component');
 const pages_path = path.resolve(__dirname, '../template/pages');
 const projectsrc_path = path.resolve(__dirname, '../template/projectsrc');
 const project_path = path.resolve(__dirname, '../template/project');
+const postman_path = path.resolve(__dirname, '../template/postman');
 const aim_dest_path = path.resolve(__dirname, '../aim/src');
 const public_dest_path = path.resolve(__dirname, '../public/dist');
 require('shelljs/global');
@@ -28,6 +31,55 @@ async function createZip(isproject) {
   await copyByPath(aim_dest_path, path.resolve(public_dest_path, './src'))
   exec(`cd ${public_dest_path} && jar -cvf ../server/dist.zip *`)
   deletePath(public_dest_path);
+}
+
+async function  generateHttplink (data) {
+  await copyByPath(path.resolve(postman_path), path.resolve(aim_dest_path))
+  await modifyHttplink(data)
+}
+async function  modifyHttplink (data) {
+  const http_path =  path.resolve(aim_dest_path, 'http.js')
+  const axios_path =  path.resolve(aim_dest_path, 'axios.js')
+  var nameList= [];
+  data.forEach(item => {
+    if (item.name != '') {
+      if (nameList.filter(target => target.name == item.name).length == 0) {
+        nameList.push({
+          name: item.name,
+          time: 0
+        })
+      } else {
+        var t = nameList.filter(target => target.name == item.name)[0]
+        t.time++
+        item.name = item.name + '_' + t.time
+      }
+    }
+  })
+  let httpConfig = ''
+  let axiosConfig = ''
+  let axiosExportConfig = ''
+  data.forEach(item => {
+    var inArray = []
+    var outArray = []
+    for (const key in item.data) {
+      if (item.data.hasOwnProperty(key)) {
+        inArray.push(`${key}='${item.data[key]}'`)
+        outArray.push(`${key}`)
+      }
+    }
+    httpConfig += `${item.name} ({${inArray.join(',')}}){
+      return httplink('${item.name}', \`${item.url}\`,{${outArray.join(',')}}, '${item.type}')
+    },
+    `
+    axiosConfig += `var ${item.name} = ({${inArray.join(',')}}) => {
+  return httpInstance.${item.type}(\`${item.url}\`, {${outArray.join(',')}})
+};
+`
+    axiosExportConfig += `${item.name},
+`
+  });
+  editorConfigInHttp(http_path, httpConfig)
+  editorConfigInAxios(axios_path, axiosConfig, axiosExportConfig)
 }
 
 async function  generateRouters (data) {
@@ -177,6 +229,7 @@ module.exports = {
   generateComponents,
   generatePages,
   generateRouters,
+  generateHttplink,
   clearAim,
   createZip,
 }

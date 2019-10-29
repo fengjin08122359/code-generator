@@ -1,12 +1,12 @@
 <template>
-  <div class="coverEl"
-    @mousedown.prevent="e => $emit('activated', e)">
-    <div class='coverEl-bg'></div>
+  <div class="coverEl"  @mousedown.prevent="e => $emit('activated', e)">
+    <div class='coverEl-bg' :style='{"border-color":displayBorderColor}'></div>
     <slot></slot>
   </div>
 </template>
 
 <script>
+import {mapState} from 'vuex'
 import handle, { coverEl } from "./index";
 export default {
   name: 'CoverEl',
@@ -14,6 +14,11 @@ export default {
     return {
       coverEl: coverEl
     }
+  },
+  computed: {
+    ...mapState({
+      displayBorderColor: state => state.main.displayBorderColor 
+    }),
   },
   created() {
     handle.created()
@@ -29,9 +34,11 @@ export default {
 .coverEl {
   position: absolute;
   box-sizing: border-box;
+  /* pointer-events: none; */
 }
 .coverEl:hover {
   cursor: move;
+  /* pointer-events: auto; */
 }
 
 .coverEl > * {
@@ -41,10 +48,19 @@ export default {
   /* position: absolute; */
   box-sizing: border-box;
 }
+
 .coverEl-bg {
   position: absolute;
   z-index: 99999999;
   background: transparent;
+  border-color: #bdbdbd;
+  border-style: dashed;
+  border-width: 1px;
+}
+.coverEl.active .coverEl-bg {
+  border-color: #03a9f4!important;
+  border-style: solid;
+  border-width: 1px;
 }
 .selection-box {
   border: 2px solid #03a9f4;

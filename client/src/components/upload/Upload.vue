@@ -1,9 +1,10 @@
 <template>
   <div class="upload">
      <el-upload
-      action="/uploadFile/img"
+      :action="actionUrl"
       :show-file-list="false"
-      :on-success="handleAvatarSuccess">
+      :on-success="handleAvatarSuccess"
+      :data='data'>
       上传文件
     </el-upload>
   </div>
@@ -15,10 +16,16 @@ export default {
   name: 'Upload',
   data() {
     return {
+      action: '/uploadFile/img',
       upload: upload
     }
   },
-  props: ['value'],
+  props: ["url", 'data'],
+  computed: {
+    actionUrl () {
+      return this.url || this.action
+    }
+  },
   created() {
     handle.created()
   },
@@ -26,9 +33,9 @@ export default {
     handle.mounted()
   },
   methods: {
-    handleAvatarSuccess (files) {
-      console.log(files)
-      this.$emit('uploadChange', document.location.protocol + '//' + location.host + files.url)
+    handleAvatarSuccess (res) {
+      console.log(res)
+      this.$emit('uploadChange', res)
     }
   },
 }

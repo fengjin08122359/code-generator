@@ -1,21 +1,35 @@
-import {Handle, DataHandle, httplink} from 'nclient-microfront';
+import {Handle, DataHandle, httplink, rgData} from 'nclient-microfront';
 
 let {entries} = Object
 
 class CompsList extends DataHandle{
   constructor() {
     super('compsListComp')
+    this.list = []
   }
   init () {
     console.log('CompsList init')
-    httplink('getcompsList', `/components/getArrangeList`, {}, 'post')
+    this.get()
+  }
+  get () {
+    httplink('getArrangeList', `/components/getArrangeList`, {}, 'post')
     .then(result => {
       this.list = []
-      for(let [key, value] of entries(result.res) ){
+      result.res.forEach(item => {
+        var items = JSON.parse(item.list)
+        var citems = rgData.componentsClass.resetToComponents(items)
         this.list.push({
-          name: key,
+          alias: item.alias,
+          name: item.id,
+          value: citems
         })
-      }
+      })
+    })
+  }
+  del (id) {
+    httplink('getArrangeList', `/components/delArrange`, {id}, 'post')
+    .then(result => {
+      this.get()
     })
   }
 }

@@ -9,6 +9,7 @@ import EldateTimePicker from './eldateTimePicker/EldateTimePicker'
 import Elimage from './elimage/Elimage'
 import Elselect from './elselect/Elselect'
 import Elswitch from './elswitch/Elswitch'
+import Eltable from './eltable/Eltable'
 function upperCamelCase(str){ 
   var reg = /\b(\w)|\s(\w)/g; 
   return str.replace(reg,function(m){return m.toUpperCase()}) 
@@ -53,6 +54,10 @@ class Ele extends DataHandle{
       type: 'elswitch',
       name: 'el-switch',
       comps: Elswitch
+    },{
+      type: 'eltable',
+      name: 'el-table',
+      comps: Eltable
     }]
     this.comps = this.list.reduce((total,item) => {
       total[upperCamelCase(item.type)] = item.comps

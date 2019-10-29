@@ -66,9 +66,4 @@ export default {
 </script>
 
 <style scoped>
-.active {
-  border-color: #03a9f4!important;
-  border-style: solid;
-  border-width: 1px;
-}
 </style>

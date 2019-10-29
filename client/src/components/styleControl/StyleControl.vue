@@ -160,6 +160,9 @@ export default {
       },{
         value: 'absolute',
         label: 'absolute'
+      },{
+        value: 'static',
+        label: 'static'
       }],
       overflowoptions: [{
         value: 'auto',
@@ -224,22 +227,22 @@ export default {
       }],
       border:  [{
         name: 'left',
-        width: "1px",
+        width: "0",
         color: '#000',
         style: 'solid'
       },{
         name: 'right',
-        width: "1px",
+        width: "0",
         color: '#000',
         style: 'solid'
       },{
         name: 'top',
-        width: "1px",
+        width: "0",
         color: '#000',
         style: 'solid'
       },{
         name: 'bottom',
-        width: "1px",
+        width: "0",
         color: '#000',
         style: 'solid'
       }],
@@ -301,9 +304,10 @@ export default {
     },
     borderStyle()  {
       return {
-        border: 0,
         ...this.border.reduce((total,item) => {
-          total[`border-${item.name}`] = `${item.width} ${item.color} ${item.style}`
+          total[`border-${item.name}-width`] = `${item.width}`
+          total[`border-${item.name}-color`] = `${item.color}`
+          total[`border-${item.name}-style`] = `${item.style}`
           return total
         }, {}),
         ...this.borderRadius.reduce((total,item) => {
@@ -333,6 +337,31 @@ export default {
     borderStyle (val) {
       this.borderChange()
     },
+    active (val) {
+      if (val) {
+        this.border = [{
+          name: 'left',
+          width: val.style['border-left-width'] || 0,
+          color: val.style['border-left-color'] || '#000',
+          style: val.style['border-left-style'] || 'solid'
+        },{
+          name: 'right',
+          width: val.style['border-right-width'] || 0,
+          color: val.style['border-right-color'] || '#000',
+          style: val.style['border-right-style'] || 'solid'
+        },{
+          name: 'top',
+          width: val.style['border-top-width'] || 0,
+          color: val.style['border-top-color'] || '#000',
+          style: val.style['border-top-style'] || 'solid'
+        },{
+          name: 'bottom',
+          width: val.style['border-bottom-width'] || 0,
+          color: val.style['border-bottom-color'] || '#000',
+          style: val.style['border-bottom-style'] || 'solid'
+        }]
+      }
+    }
   },
   components: {
     RawControl

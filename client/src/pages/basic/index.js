@@ -52,8 +52,14 @@ let handle = new Handle({
     httplink('getBasic', `/components/getBasic`, {id}, 'post')
     .then(result => {
       console.log(result)
-      basic.alias = result.res.alias;
-      rgData.componentsClass.setList(JSON.parse(result.res.list))
+      if (result.res) {
+        basic.alias = result.res.alias;
+        if (result.res.list) {
+          rgData.componentsClass.setList(JSON.parse(result.res.list))
+        } else {
+          rgData.componentsClass.setList([])
+        }
+      }
     })
   },
 })

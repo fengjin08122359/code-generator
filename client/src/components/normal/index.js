@@ -12,7 +12,7 @@ class Normal extends DataHandle{
     
     this.list = [{
       type: 'ndiv',
-      name: 'div',
+      name: 'div(可使用子组件)',
       comps: Ndiv
     },{
       type: 'nlabel',

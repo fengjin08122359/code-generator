@@ -30,7 +30,11 @@
           </template>
         </el-input>
       </el-col>
-      <el-col :span="12" v-if='target.show'>
+      <el-col :span="6">
+            定位框边线颜色:
+        <el-color-picker v-model="borderColor"></el-color-picker>
+      </el-col>
+      <el-col :span="6" v-if='target.show'>
         <el-input v-model='target.alias'>
           <template slot='prepend'>
             组件名称
@@ -39,14 +43,15 @@
       </el-col>
     </el-row>
     <div class='screenBack'>
-      <div :style='screenStyle' class='screenStyle'>
-        <slot></slot>
+      <div :style='screenStyle' class='screenStyle' >
+        <slot ></slot>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {mapState ,mapActions} from 'vuex'
   import handle, {
     screen
   } from "./index";
@@ -60,11 +65,15 @@
         fileList: [],
         url: '',
         width: 900, 
-        height: 600
+        height: 600,
+        borderColor: '#dbdbdb'
       }
     },
     props: ['target'],
     computed: {
+      ...mapState({
+        displayBorderColor: state => state.main.displayBorderColor 
+      }),
       screenStyle() {
         return {
           ...this.screenTo ? {
@@ -85,6 +94,9 @@
       handle.mounted()
     },
     methods: {
+      ...mapActions({
+        'setDisplayBorderColor':'main/setDisplayBorderColor'
+      }),
       beforeUpload () {
         return false
       },
@@ -122,6 +134,14 @@
     watch: {
       zoom(val) {
         handle.setZoom(val)
+      },
+      borderColor (val) {
+        if (val) {
+          this.setDisplayBorderColor(val);
+        }
+      },
+      displayBorderColor (val) {
+        this.borderColor = val
       }
     },
   }
